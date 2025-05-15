@@ -1,0 +1,8 @@
+DBMS는 postgreSQL을 사용할것이고 다음 룰에 따라 권한 및 계정생성 해줘
+- Admin ROLE : DDL 권한
+- Developer ROLE : DML 권한
+- 스키마명 AGS
+- Admin ROLE은 스키마 AGS에 모든 생성권한을 가짐
+- Developer ROLE은 스키만 AGS의 테이블에 대한 DML권한을 가짐
+- 사용자는 Admin권한을 가지는 사용자 1명과 Developer 권한을 가지는 사용자 1명 생성해줘
+- SQL스크립트도 작업완료 후 database 폴더아래에 만들어줘
