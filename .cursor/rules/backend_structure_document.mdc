@@ -1,0 +1,156 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Backend Structure Document
+
+This document outlines the backend setup for the AGS 운영관리 시스템, a multinational talent sourcing system. The following sections describe the architecture, database management, API design, hosting solutions, infrastructure components, security measures, and monitoring practices in simple language.
+
+## 1. Backend Architecture
+
+The backend is built using a microservices approach, with four separate Spring Boot services, each handling a specific part of the system:
+
+- 인력 소싱 및 평가 (Talent Sourcing & Evaluation)
+- On-Boarding/Off-Boarding Audit
+- 계획 및 성과 관리 (Planning & Performance Management)
+- Knowledge Management
+
+These services use Java and MyBatis, purposely avoiding JPA as per requirements. The design pattern follows a modular structure so that each service can be developed, tested, and scaled independently. This approach supports scalability by allowing new features and services to be added without disrupting existing flows. Maintenance is simplified because changes in one service do not affect the others, and performance is optimized by isolating workloads.
+
+## 2. Database Management
+
+The system uses PostgreSQL for all persistent data storage. Here’s how the database is managed:
+
+- **Type:** Relational Database (SQL)
+- **Technology:** PostgreSQL
+- **Data Organization:** Data is stored in a structured format using tables in a single instance. The use of schemas and scripts helps manage database changes and ensures consistency.
+- **Data Access:** The backend services interact with PostgreSQL using MyBatis, sending SQL queries to fetch, update, and delete data. This interaction is further encapsulated within service layers to guarantee data integrity and security.
+
+## 3. Database Schema
+
+The database schema is organized to address the different needs of the project. Below is a human-readable summary along with a simplified PostgreSQL schema example:
+
+### Human Readable Summary
+
+- A table for projects where project details, SOWs, and related information are stored.
+- A table for candidate information and evaluations to store candidate details and feedback.
+- A table for partner company (협력사) details to manage accounts and SOW submissions.
+- A table for performance data to store daily performance and KPI results, received via integration with the purchasing system.
+- A table for documents, including SOWs, proposals, and 서약서 copies.
+- Additional tables for audit logs, user roles, authentication details, and language resource mappings.
+
+### Simplified PostgreSQL Schema Example
+
+-- Projects Table:
+CREATE TABLE projects (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Candidates Table:
+CREATE TABLE candidates (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    skills TEXT,
+    evaluation_score NUMERIC,
+    project_id INTEGER REFERENCES projects(id)
+);
+
+-- Partner Companies Table:
+CREATE TABLE partner_companies (
+    id SERIAL PRIMARY KEY,
+    company_name VARCHAR(255) NOT NULL,
+    contact_info TEXT
+);
+
+-- Performance Data Table:
+CREATE TABLE performance_data (
+    id SERIAL PRIMARY KEY,
+    project_id INTEGER REFERENCES projects(id),
+    date DATE,
+    planned_manpower INTEGER,
+    actual_manpower INTEGER
+);
+
+-- Documents Table:
+CREATE TABLE documents (
+    id SERIAL PRIMARY KEY,
+    document_type VARCHAR(50),
+    file_path TEXT,
+    uploaded_at TIMESTAMP DEFAULT NOW(),
+    project_id INTEGER REFERENCES projects(id)
+);
+
+-- Additional tables for users, roles, logs, etc. would follow similar patterns.
+
+## 4. API Design and Endpoints
+
+The backend exposes RESTful APIs to enable smooth communication between the frontend and backend services. Here’s a summary:
+
+- **RESTful APIs:** All services offer REST endpoints to create, read, update, or delete data.
+- **Key Endpoints Include:**
+  - Endpoints for project registration, SOW management, and candidate evaluations.
+  - Endpoints for onboarding/offboarding audits to view project personnel and download attached 서약서 files.
+  - Endpoints for performance management to receive daily performance data (via JSON) from the purchasing system.
+  - Endpoints for uploading and retrieving guide documents, Q&A posts, and lessons learned.
+
+Each endpoint is designed with clear paths and methods (GET, POST, PUT, DELETE) to ensure that interactions are predictable and maintainable.
+
+## 5. Hosting Solutions
+
+The backend services are hosted using modern cloud-based container orchestration with Kubernetes. Key details include:
+
+- **Containerization:** All services are packaged as Docker images.
+- **Orchestration:** Kubernetes is used to deploy, manage, and scale the containers.
+- **CI/CD Integration:** GitHub Actions automates building, testing, and deployment of the services.
+
+This hosting solution provides significant benefits:
+
+- **Reliability:** Kubernetes can automatically restart failed containers and manage rolling updates.
+- **Scalability:** Services can be scaled horizontally based on demand.
+- **Cost-Effectiveness:** Cloud infrastructure allows for paying only for used resources and makes scaling efficient.
+
+## 6. Infrastructure Components
+
+Several infrastructure components work together to ensure a smooth and fast user experience:
+
+- **Load Balancers:** Distribute incoming traffic evenly across service instances to prevent any single instance from becoming a bottleneck.
+- **Caching Mechanisms:** Implemented if needed, such as using Redis or in-memory caches, to reduce database load and improve response times.
+- **Content Delivery Networks (CDNs):** While mostly used for serving static frontend assets, they can also cache certain API responses to reduce latency.
+- **Service Mesh (Optional):** For advanced routing and security between the microservices, ensuring safe and efficient communication.
+
+## 7. Security Measures
+
+Security is a top priority throughout the backend:
+
+- **Authentication & Authorization:** Uses OAuth 2.0 with Okta integration to verify user identity and manage access rights.
+- **Data Encryption:** Sensitive data is encrypted both in transit (through HTTPS) and at rest as per best practices.
+- **Role-Based Access Control:** Different roles (PMs, 협력사 Managers, Business team, etc.) are defined to restrict access to sensitive endpoints.
+- **Secure File Handling:** Uploaded files like 서약서 copies are stored securely, with access limited to authorized personnel (협력사 관리자 and 정보보호팀).
+
+## 8. Monitoring and Maintenance
+
+To ensure that the backend is running smoothly, the following tools and practices are in place:
+
+- **Monitoring Tools:** Tools such as Prometheus and Grafana (or similar) monitor the health and performance of services and infrastructure.
+- **Logging:** Centralized logging (perhaps using ELK stack) captures error logs and key system events for troubleshooting.
+- **Maintenance Strategies:** Regular updates, patch management, and continuous integration and delivery pipelines ensure that the backend remains up-to-date and secure.
+
+## 9. Conclusion and Overall Backend Summary
+
+In summary, the backend for the AGS 운영관리 시스템 is designed to support a complex, multinational talent sourcing environment through a modular microservices approach. Its key features include:
+
+- Four distinct Spring Boot services handling different functionalities.
+- A PostgreSQL relational database managed with clear schema scripts.
+- RESTful APIs that facilitate interaction between the frontend and backend.
+- A robust hosting solution using Kubernetes and Docker, with CI/CD via GitHub Actions.
+- Infrastructure components like load balancers, caching, and CDNs that improve performance.
+- Strong security measures, including OAuth 2.0 with Okta, role-based access, and encryption.
+- Comprehensive monitoring and maintenance strategies to catch issues early and keep the system reliable.
+
+This setup is tailored to meet the project goals and user needs, making it a reliable, scalable, and secure solution for managing multinational talent sourcing and associated processes.

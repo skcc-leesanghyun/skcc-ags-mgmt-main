@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ags.audit.repository.ProjectRepository">
+    
+    <select id="findAll" resultType="com.skcc.ags.audit.domain.Project">
+        SELECT * FROM projects ORDER BY created_at DESC
+    </select>
+
+    <select id="findById" parameterType="long" resultType="com.skcc.ags.audit.domain.Project">
+        SELECT * FROM projects WHERE id = #{id}
+    </select>
+
+    <select id="findByProjectCode" parameterType="string" resultType="com.skcc.ags.audit.domain.Project">
+        SELECT * FROM projects WHERE project_code = #{projectCode}
+    </select>
+
+    <insert id="save" parameterType="com.skcc.ags.audit.domain.Project">
+        INSERT INTO projects (
+            project_name, project_code, description, status,
+            start_date, end_date, created_by, created_at,
+            updated_by, updated_at
+        ) VALUES (
+            #{projectName}, #{projectCode}, #{description}, #{status},
+            #{startDate}, #{endDate}, #{createdBy}, CURRENT_TIMESTAMP,
+            #{updatedBy}, CURRENT_TIMESTAMP
+        )
+    </insert>
+
+    <update id="update" parameterType="com.skcc.ags.audit.domain.Project">
+        UPDATE projects
+        SET project_name = #{projectName},
+            project_code = #{projectCode},
+            description = #{description},
+            status = #{status},
+            start_date = #{startDate},
+            end_date = #{endDate},
+            updated_by = #{updatedBy},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM projects WHERE id = #{id}
+    </delete>
+</mapper> 

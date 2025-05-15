@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ags.audit.repository.PersonnelRepository">
+    
+    <select id="findAll" resultType="com.skcc.ags.audit.domain.Personnel">
+        SELECT * FROM personnel
+    </select>
+
+    <select id="findByProjectId" resultType="com.skcc.ags.audit.domain.Personnel">
+        SELECT * FROM personnel WHERE project_id = #{projectId}
+    </select>
+
+    <select id="findById" resultType="com.skcc.ags.audit.domain.Personnel">
+        SELECT * FROM personnel WHERE id = #{id}
+    </select>
+
+    <select id="findByEmployeeId" resultType="com.skcc.ags.audit.domain.Personnel">
+        SELECT * FROM personnel WHERE employee_id = #{employeeId}
+    </select>
+
+    <insert id="save" parameterType="com.skcc.ags.audit.domain.Personnel" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO personnel (
+            project_id,
+            employee_id,
+            name,
+            role,
+            department,
+            company,
+            start_date,
+            end_date,
+            pledge_status,
+            pledge_submission_date,
+            pledge_file_path,
+            created_by,
+            created_at,
+            updated_by,
+            updated_at
+        ) VALUES (
+            #{projectId},
+            #{employeeId},
+            #{name},
+            #{role},
+            #{department},
+            #{company},
+            #{startDate},
+            #{endDate},
+            #{pledgeStatus},
+            #{pledgeSubmissionDate},
+            #{pledgeFilePath},
+            #{createdBy},
+            CURRENT_TIMESTAMP,
+            #{createdBy},
+            CURRENT_TIMESTAMP
+        )
+    </insert>
+
+    <update id="update" parameterType="com.skcc.ags.audit.domain.Personnel">
+        UPDATE personnel
+        SET
+            project_id = #{projectId},
+            employee_id = #{employeeId},
+            name = #{name},
+            role = #{role},
+            department = #{department},
+            company = #{company},
+            start_date = #{startDate},
+            end_date = #{endDate},
+            pledge_status = #{pledgeStatus},
+            pledge_submission_date = #{pledgeSubmissionDate},
+            pledge_file_path = #{pledgeFilePath},
+            updated_by = #{updatedBy},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM personnel WHERE id = #{id}
+    </delete>
+</mapper> 

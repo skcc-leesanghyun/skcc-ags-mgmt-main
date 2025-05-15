@@ -1,0 +1,127 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Tech Stack Document for AGS 운영관리 시스템
+
+This document explains the selection of the various technologies used in the AGS 운영관리 시스템 – a multinational talent sourcing platform for corporate project management. Each technology decision has been made with the goals of reliability, ease of use, and performance in mind. Below, you will find clear descriptions of the frontend and backend systems, the infrastructure setup, integrations, and security measures.
+
+## Frontend Technologies
+
+Our frontend is built using Vue 3, chosen for its modern capabilities and responsiveness. Here’s what we use and why:
+
+*   **Vue 3**
+
+    *   Offers reactive components that ensure a seamless user experience.
+    *   Simplifies the development of interactive interfaces for all user roles including PMs and 협력사 Managers.
+
+*   **Modern, Corporate UI Design**
+
+    *   Adopts a bright and modern aesthetic in line with common corporate design guidelines.
+    *   Incorporates standard corporate fonts and layout practices.
+
+*   **Language Toggle Feature (English/Korean)**
+
+    *   Allows users to easily switch languages via a browser-based toggle.
+    *   Uses resource files for customizable translations, ensuring that technical or specific terms are appropriately adjusted.
+
+These choices not only provide a smooth, intuitive interface but also ensure that users can comfortably access project details and documentation regardless of their language preference.
+
+## Backend Technologies
+
+The backend of the system is constructed to efficiently handle complex operations such as project registration, candidate sourcing, and performance management. The core components include:
+
+*   **Spring Boot & Java**
+
+    *   Provides a robust framework for building scalable and maintainable server-side applications.
+    *   Well-suited for handling business logic across multiple user roles and workflows.
+
+*   **MyBatis**
+
+    *   Facilitates direct and efficient database interactions by mapping SQL directly to Java objects.
+    *   Avoids the overhead of JPA, keeping database operations lean and straightforward.
+
+*   **PostgreSQL**
+
+    *   Acts as the primary relational database for storing project details, candidate data, and audit logs.
+    *   A single PostgreSQL instance is shared across all backend services, with schema scripts maintained in a dedicated folder for organized data management.
+
+*   **Microservices Architecture**
+
+    *   The backend is divided into four distinct services for different functional areas (인력 소싱 및 평가, On-Boarding/Off-Boarding Audit, 계획 및 성과 관리, Knowledge Management).
+    *   This separation promotes modularity and easier maintenance.
+
+Together, these backend choices support the system’s data-heavy operations and ensure that business processes are both reliable and efficient.
+
+## Infrastructure and Deployment
+
+Modern infrastructure tools have been selected to guarantee smooth deployment, scalability, and efficient management of our system.
+
+*   **Kubernetes**
+
+    *   Manages Docker containers to deploy and scale both frontend and multiple backend services.
+    *   Provides high availability and efficient resource management across the application.
+
+*   **Docker**
+
+    *   Encapsulates the application into lightweight containers, ensuring consistency across development, testing, and production environments.
+
+*   **GitHub Actions (CI/CD)**
+
+    *   Automates the build, test, and deployment processes.
+    *   Ensures that updates are safely and rapidly integrated into the system.
+
+*   **Version Control via GitHub**
+
+    *   Allows for collaborative code management and rollbacks when necessary.
+
+These infrastructure choices contribute to the application’s overall stability, making deployments predictable and scalable as project needs grow.
+
+## Third-Party Integrations
+
+Integration with external services enhances the system’s capabilities beyond its core development stack:
+
+*   **Okta OAuth2**
+
+    *   Implements robust authentication, ensuring secure login processes for various user roles.
+    *   Integrates seamlessly with our backend, leveraging industry-standard security protocols.
+
+*   **REST API for 구매시스템 Integration**
+
+    *   Connects with the existing purchasing system to collect daily performance data in JSON format.
+    *   Allows for automated, daily updates that feed into our KPI dashboard.
+
+Leveraging these third-party services not only simplifies complex functionalities such as authentication and data exchange, but also enhances the overall user experience through reliable integration.
+
+## Security and Performance Considerations
+
+Security and performance are at the heart of every technology decision made for this project:
+
+*   **Security Measures**
+
+    *   Authentication is handled via OAuth2 with Okta, ensuring that only authorized personnel access system resources.
+    *   Role-based access control enforces the principle of least privilege across multiple user roles (PM, 협력사 관리자, 정보보호팀, 등 등).
+    *   Secure handling and viewing of sensitive documents (서약서 in PDF or image formats) ensures compliance and supports auditing.
+
+*   **Performance Optimizations**
+
+    *   A microservices architecture allows each backend service to scale independently based on load.
+    *   The choice of MyBatis over JPA avoids unnecessary complexity and overhead in database interactions, resulting in quicker response times.
+    *   The use of Kubernetes and Docker guarantees efficient resource allocation and high availability.
+
+These considerations help maintain a secure environment while ensuring that the system responds quickly, even under heavy usage.
+
+## Conclusion and Overall Tech Stack Summary
+
+The AGS 운영관리 시스템 is built on a modern, efficient, and secure tech stack that reliably supports the dynamic needs of multinational talent sourcing and project management. Here’s a quick summary:
+
+*   **Frontend**: Vue 3 with a modern design and built-in language toggle functionality enhances user interaction.
+*   **Backend**: Spring Boot with Java and MyBatis provides a robust, scalable server-side solution; PostgreSQL centralizes data management across all services.
+*   **Infrastructure**: Docker, Kubernetes, and GitHub Actions ensure smooth, scalable, and automated deployment processes.
+*   **Third-Party Integrations**: Okta OAuth2 secures authentication while REST APIs integrate external purchasing data.
+*   **Security & Performance**: Role-based security, efficient microservices orchestration, and targeted optimizations deliver a secure and fast user experience.
+
+This carefully chosen tech stack aligns with the project’s requirements for a secure, modular, and scalable enterprise system, ensuring that each component contributes effectively to a robust and efficient business solution.

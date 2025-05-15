@@ -1,0 +1,56 @@
+server:
+  port: ${SERVICE_PORT:8081}
+  servlet:
+    context-path: /api/knowledge
+
+spring:
+  application:
+    name: knowledge-service
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:ags_knowledge}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OKTA_ISSUER_URI}
+          jwk-set-uri: ${OKTA_JWK_SET_URI}
+
+mybatis:
+  mapper-locations: classpath:mappers/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    default-fetch-size: 100
+    default-statement-timeout: 30
+  type-aliases-package: com.skcc.ags.knowledge.domain
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+  packages-to-scan: com.skcc.ags.knowledge.controller
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  health:
+    db:
+      enabled: true
+
+logging:
+  level:
+    root: INFO
+    com.skcc.ags: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.mybatis: DEBUG 

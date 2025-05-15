@@ -1,0 +1,143 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# AGS 운영관리 시스템 Project Summary
+
+The AGS 운영관리 시스템 is an enterprise-grade multinational talent sourcing system designed to support various user roles including Project Managers (PM), 협력사 Managers, 사업팀 담당자, 운영담당자, 정보보호팀, and 시스템관리자. Below is an overview of the project plan, core features, technology stack, and key considerations.
+
+---
+
+## 1. Project Description
+
+- **Objective:** Facilitate the sourcing of offshore multinational talent for projects. The system helps manage project information, create SOWs (Statements of Work), conduct candidate searches, and select candidates for projects.
+- **Users:** 
+  - PM (Project Managers)
+  - 협력사 관리자 (Contractor’s Managers)
+  - 사업팀 담당자 (Business Team Representatives)
+  - 운영담당자 (Operation Management from the Delivery Innovation Team)
+  - 정보보호팀 (Information Security Team)
+  - 시스템관리자 (System Administrators)
+
+---
+
+## 2. Core Features
+
+### Talent Sourcing and Evaluation
+
+- **Candidate Search:** Implement advanced search with filters and pagination for efficient data retrieval.
+- **SOW Creation:** Provide a browser-based document editor with table of contents, direct content editing, and downloadable formats.
+- **Proposal Creation and Feedback:** Allow creation and evaluation of proposals alongside candidate assessments.
+- **Candidate Evaluation Input:** Interface to enter evaluations and review candidate details.
+- **Project Purchase Termination:** Functionality for marking the end of a project purchase process.
+
+### On-boarding/Off-boarding Audit
+
+- **Project Information View:** Display comprehensive project details.
+- **Project Personnel View:** List and manage personnel associated with projects.
+- **Security-Related Information:** View sensitive, security-related data per personnel.
+- **Download Pledge Documents:** Securely download 서약서 files (PDF/image) accessible by 협력사 관리자 and 정보보호팀.
+
+### Planning and Performance Management
+
+- **Manpower Usage Plan Registration:** Monthly registration of planned manpower by technical grade.
+- **Daily Performance Data Collection:** Integrate with an external purchasing system through secure REST API calls, receiving data in JSON format.
+- **Automated Performance Calculation:** Automatically calculate performance metrics.
+- **KPI Dashboard:** Display performance against planned manpower on a responsive dashboard.
+
+### Knowledge Management
+
+- **Guide Materials Management:** Upload and view stage-specific guide documents.
+- **Q&A Sharing:** Provide a platform for questions and answers among users.
+- **Lessons Learned Management:** Archive and manage experiences and best practices.
+- **Search Functionality:** Robust search across the knowledge base.
+
+---
+
+## 3. Tech Stack
+
+- **Frontend:** Vue 3 with language toggle (English/Korean) and customizable resource files for term translations.
+- **Backend:**
+  - Spring Boot (Java)
+  - MyBatis (Note: JPA is explicitly disallowed)
+  - **Database:** PostgreSQL (managed via schema scripts in the project’s 'database' folder)
+- **Authentication:** OAuth 2 integration with Okta.
+- **Deployment:**
+  - Kubernetes with Docker image deployment
+  - CI/CD using GitHub Actions
+- **Backend Service Modules:** 
+  - Talent Sourcing and Evaluation
+  - On-Boarding/Off-Boarding Audit
+  - Planning and Performance Management
+  - Knowledge Management
+- **API Integration:** REST API for collecting daily performance data from the existing purchasing system in JSON format.
+
+---
+
+## 4. Design Preferences and UI Themes
+
+- **Corporate Style:** Modern and bright, using common corporate fonts and layouts with potential for future customization.
+- **Responsive Interactions:** Ensure fast, responsive UI especially for candidate searches and data-heavy interactions.
+
+---
+
+## 5. Security & Additional Requirements
+
+In adherence with secure application principles, the following practices and controls will be integrated:
+
+- **Authentication & Access Control:**
+  - Robust OAuth 2 integration with Okta
+  - Role-based access control ensuring each user role has minimum permissions
+  - Secure session management and MFA options where necessary
+
+- **Input Handling:**
+  - Rigorous input validation and output encoding to prevent injection (SQL, NoSQL) and XSS attacks
+  - Parameterized queries using MyBatis to ensure safe database interactions
+
+- **Data Protection:**
+  - Sensitive document storage (e.g., 서약서) with restricted access
+  - Encryption of data at rest (PostgreSQL) and in transit (TLS 1.2+)
+  - Secure key and secret management practices
+
+- **API Security:**
+  - HTTPS enforced for all API communications
+  - Rate limiting and thorough error handling for the REST API integration
+  - Secure handling of JSON responses from the purchasing system
+
+- **Web Application Security Hygiene:**
+  - Use of security headers (Content-Security-Policy, Strict-Transport-Security, X-Content-Type-Options, etc.)
+  - Configured secure cookies (HttpOnly, Secure, SameSite) to prevent session hijacking
+  - CSRF protection for state-changing operations
+
+- **Infrastructure & Deployment:**
+  - Hardened configuration for Kubernetes and server setup
+  - Regular updates and scanning for vulnerabilities in third-party libraries and dependencies
+  - Secure CI/CD pipelines via GitHub Actions
+
+---
+
+## 6. Constraints and Considerations
+
+- **Database:** Single PostgreSQL instance with emphasis on secure configuration and file permissions.
+- **Integration:** Direct integration solely via REST API for daily performance data – requiring robust error handling and response validation.
+- **Technical Constraint:** Use of MyBatis exclusively in the backend codebase (JPA is not permitted).
+- **Performance:** Attention to scalability especially for large candidate datasets and smooth candidate search functionality.
+
+---
+
+## 7. Potential Issues and Risk Mitigation
+
+- **Performance Bottlenecks:** Large candidate search datasets will be optimized with efficient queries and pagination. Implement indexing as needed.
+- **REST API Dependencies:** Introduce retries and comprehensive error handling for failures coming from the purchasing system API.
+- **Document Handling:** Secure storage and controlled access for 서약서 documents to prevent unauthorized access and leakage.
+
+---
+
+## Conclusion
+
+The AGS 운영관리 시스템 is designed with enterprise requirements, robust security controls, and a scalable architecture. With clear role-based permissions, integration with critical external systems, and stringent security guidelines, the system is built to support multinational talent sourcing efficiently while maintaining high standards of security and data protection.
+
+This overview outlines the project's structure, technology stack, and security measures in line with modern best practices. Further design and implementation details will continue to adhere to the principles of Security by Design, Least Privilege, and Defense in Depth throughout all stages of the project.

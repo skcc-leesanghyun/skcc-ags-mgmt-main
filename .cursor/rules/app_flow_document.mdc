@@ -1,0 +1,11 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# App Flow Document
+
+## Onboarding and Sign-In/Sign-Up
+The application introduces new users with a modern landing page that explains the value and core functionalities of the system. When a new user visits the site, they are greeted with a simple and clear interface where they can choose to sign up using their email or via social login options provided by the integrated Okta OAuth2 system. Users representing roles such as PM, 협력사 관리자 (ATS 서비스), 사업팀 담당자, 운영담당자 (딜리버리혁신팀), 정보보호팀, and 시스템 관리자 follow a guided registration process that requests basic information, sets up credentials, and confirms their identity according to corporate security standards. Account creation includes steps for email verification and simple instructions to ensure that users understand how to securely log in. If a user forgets their password, the system provides an easy-to-access 

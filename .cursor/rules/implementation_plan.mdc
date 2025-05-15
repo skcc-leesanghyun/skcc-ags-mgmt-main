@@ -1,0 +1,117 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Implementation plan
+
+## Phase 1: Environment Setup
+
+1. **Prevalidation:** Check if the current directory already contains a project (e.g., inspect for a README.md or existing folder structure). If the project already exists, skip initialization steps. (Project Overview)
+
+2. **Project Structure:** Create the following directories in the project root if they do not exist:
+   - `/frontend` (for the Vue 3 frontend code)
+   - `/backend` (for the Spring Boot microservices)
+   - `/database` (for PostgreSQL schema scripts)
+   - `/resources` (for locale files and translation resource files used by the frontend)
+   (Project Overview, Tech Stack)
+
+3. **Tooling Check:** Verify that Node.js (suitable for Vue 3 development) and a JDK (for Spring Boot) are installed. For Node.js, you can run `node -v` and for Java run `java -version`. If not installed, install the appropriate versions as required by your team. (Tech Stack: Frontend, Backend)
+
+4. **Build Tool Initialization for Backend:** In the `/backend` directory, initialize a Maven (or Gradle if preferred by your team but Maven is typical for Spring Boot) project for Spring Boot. This project will later contain 4 modules corresponding to the backend services. (Tech Stack: Backend)
+
+## Phase 2: Frontend Development
+
+5. **Vue App Initialization:** In the `/frontend` directory, initialize a Vue 3 project. Use the Vue CLI (or Vite) ensuring that Vue 3 is configured. (Tech Stack: Frontend)
+
+6. **Language Toggle & Resources:** Create a resource file directory at `/frontend/src/resources` and add language JSON files (e.g., `en.json` and `kr.json`) with customizable terminology entries. (Project Overview: Design Preferences, Other Important Details)
+
+7. **Routing Setup:** Set up Vue Router to manage the following core sections as routes:
+   - Talent Sourcing and Evaluation
+   - On-boarding/Off-boarding Audit
+   - Planning and Performance Management
+   - Knowledge Management
+   (Core Pages/Sections)
+
+8. **Feature Pages & Components:** Under `/frontend/src/components` or `/pages`, create the following components/pages:
+   - **Candidate Search:** A page with advanced search filters and pagination.
+   - **SOW Creation:** A browser-based document editor that includes a table of contents, in-line editing, and a download button for exporting the document.
+   - **Proposal Creation/Feedback:** Page for creating proposals and submitting feedback.
+   - **Candidate Evaluation:** A page to view candidates and input evaluations.
+   - **Project Purchase Completion:** A simple page to confirm project purchases.
+   - **Audit Views:** Pages for Project Information, Project Personnel, and Personnel Security Info. Include a download button for pledge agreement copies.
+   - **Planning & KPI Dashboard:** A page to register monthly manpower plans and display KPIs that compare planned versus actual figures.
+   - **Knowledge Management:** Components for uploading/viewing process guides, Q&A posts, and Lessons Learned. Also include a search functionality.
+   (Core Pages/Sections, Key Data Fields and Filters)
+
+9. **Application Shell:** Create the main application files `/frontend/src/App.vue` and `/frontend/src/main.js` to bootstrap the Vue app and integrate routing and language toggle features. (Core Pages/Sections)
+
+10. **Validation:** Run `npm run serve` (or the equivalent command) within the `/frontend` directory to verify that the application launches successfully and that routing and language toggling work as expected. (Design Preferences)
+
+## Phase 3: Backend Development
+
+11. **Backend Multi-Service Structure:** In the `/backend` directory, divide the project into 4 distinct modules corresponding to:
+    - Talent Sourcing and Evaluation
+    - On-boarding/Off-boarding Audit
+    - Planning and Performance Management
+    - Knowledge Management
+    Create separate package structures for each service within the Maven project. (Deployment Units)
+
+12. **Spring Boot Initialization:** For each module, initialize a Spring Boot application. Include dependencies for Spring Web, Spring Security, OAuth2 Client, MyBatis, and PostgreSQL. (Tech Stack: Backend)
+
+13. **Database Configuration:** Configure each backend service with a data source to connect to the single PostgreSQL instance. Place the PostgreSQL schema scripts in the `/database` folder. Write a sample MyBatis mapping and a quick test query to verify connectivity. (Tech Stack: Backend, Database)
+
+14. **API Endpoints Development:** Develop REST API endpoints for each of the following, placing code in appropriate packages (e.g., `com.ags.talent`, `com.ags.audit`, etc.):
+    - **Talent Sourcing and Evaluation:**
+      - GET `/api/v1/candidates` with advanced filtering and pagination (for candidate search).
+      - POST `/api/v1/sow` for SOW creation/editing.
+      - POST/GET `/api/v1/proposals` for proposal creation and feedback.
+      - GET/POST `/api/v1/evaluations` for candidate evaluation data.
+      - POST `/api/v1/projects/complete` to mark project purchase completion.
+    - **On-boarding/Off-boarding Audit:**
+      - GET `/api/v1/projects/info` for project information.
+      - GET `/api/v1/projects/personnel` for personnel view.
+      - GET `/api/v1/security-info` for personnel security info.
+      - GET `/api/v1/pledge/download` for downloading pledge agreement copies.
+    - **Planning and Performance Management:**
+      - POST `/api/v1/plan` to register monthly manpower usage plans.
+      - GET `/api/v1/kpi` to retrieve automated KPI calculations (using planned vs. actual data).
+    - **Knowledge Management:**
+      - POST `/api/v1/guides/upload` and GET `/api/v1/guides` for guide materials.
+      - POST/GET endpoints for Q&A and Lessons Learned management.
+    (Core Pages/Sections, Key Data Fields and Filters)
+
+15. **OAuth2 Integration:** Implement OAuth2 authentication using Okta. Configure Spring Security with minimal role-specific mappings as no token handling fine-tuning is required. (Other Important Details: Authentication)
+
+16. **Validation:** Write and run integration tests for each API endpoint (you may use tools like Postman or automated Spring Boot tests) to ensure they return the expected JSON responses. (Core Pages/Sections)
+
+## Phase 4: Integration
+
+17. **Frontend-Backend Connection:** In the Vue app, use Axios (or similar HTTP client) to create services for calling each API endpoint. Store API-related code in `/frontend/src/services`. (Project Overview: Core Pages/Sections)
+
+18. **Authentication Handling on Frontend:** Configure Axios interceptors to include OAuth2 tokens obtained from Okta. Ensure that API calls include proper authentication headers. (Other Important Details: Authentication)
+
+19. **Testing End-to-End:** Simulate end-to-end flows by starting both the Vue app and backend services locally, and test key flows such as candidate search, SOW creation, proposal submission, audit views, plan registration, KPI dashboard, and document uploads. (Core Pages/Sections)
+
+20. **Validation:** Use sample test credentials and data to perform an end-to-end test ensuring smooth interaction between frontend and backend systems.
+
+## Phase 5: Deployment
+
+21. **Docker Configuration:** Create Dockerfiles for both the Vue frontend and each of the 4 Spring Boot backend services:
+    - For the frontend, base the build on an official Node image to build the app, then use a lightweight server (e.g., Nginx) to serve the static files.
+    - For the backend, use an OpenJDK base image. (Deployment, Tech Stack)
+
+22. **Kubernetes Setup:** Write Kubernetes manifest files (YAML) to deploy:
+    - The UI as one deployment/service.
+    - The 4 backend services as separate deployments/services. Configure environment variables for the PostgreSQL connection using secrets/configMaps as appropriate.
+    (Deployment)
+
+23. **CI/CD Pipeline:** Configure GitHub Actions workflows to build the Docker images, run tests, and deploy the images to your Kubernetes cluster. Ensure the pipeline builds the frontend and each of the backend services independently. (Deployment)
+
+24. **Cluster Validation:** Once deployed, verify the Kubernetes cluster by running commands like `kubectl get pods` and by hitting health-check endpoints for each service to confirm a green status. (Deployment)
+
+25. **Final Pre-Launch Test:** Conduct a full system test including the integration of the REST API from the purchasing system for daily performance data collection. Confirm all features (talent sourcing, SOW, audit, KPI, and knowledge management) operate as expected in the deployed environment. (Core Pages/Sections, Other Important Details)
+
+This completes the step-by-step implementation plan for the AGS Operation Management System.

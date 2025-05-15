@@ -1,0 +1,45 @@
+// Colors
+$primary-color: #0052CC;
+$secondary-color: #172B4D;
+$accent-color: #FFAB00;
+$background-color: #F4F5F7;
+$highlight-color: #FFFFFF;
+$border-color: #DFE1E6;
+$hover-color: #EBECF0;
+
+// Typography
+$font-family-base: 'Helvetica Neue', Arial, sans-serif;
+$font-size-xs: 12px;
+$font-size-sm: 14px;
+$font-size-md: 16px;
+$font-size-lg: 18px;
+$font-size-xl: 20px;
+$font-weight-normal: 400;
+$font-weight-bold: 600;
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 24px;
+$spacing-xxl: 32px;
+
+// Border
+$border-radius-sm: 4px;
+$border-radius-md: 8px;
+$border-radius-lg: 12px;
+
+// Transitions
+$transition-fast: 0.2s ease;
+$transition-normal: 0.3s ease;
+$transition-slow: 0.4s ease;
+
+// Z-index
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070; 

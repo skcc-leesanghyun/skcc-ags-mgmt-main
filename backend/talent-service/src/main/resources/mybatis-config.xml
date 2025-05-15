@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!-- 카멜케이스 자동 매핑 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!-- 쿼리 결과가 null인 경우에도 컬럼 포함 -->
+        <setting name="callSettersOnNulls" value="true"/>
+        <!-- 실행할 쿼리 로깅 -->
+        <setting name="logImpl" value="SLF4J"/>
+        <!-- Statement 재사용 -->
+        <setting name="defaultExecutorType" value="REUSE"/>
+        <!-- 지연 로딩 사용 -->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!-- 한 번에 가져올 레코드 수 -->
+        <setting name="defaultFetchSize" value="100"/>
+        <!-- 쿼리 실행 제한 시간 (30초) -->
+        <setting name="defaultStatementTimeout" value="30"/>
+    </settings>
+
+    <typeHandlers>
+        <!-- PostgreSQL의 TEXT[] 타입을 Java String[] 타입으로 변환 -->
+        <typeHandler handler="com.ags.talent.config.StringArrayTypeHandler" javaType="[Ljava.lang.String;" jdbcType="OTHER"/>
+    </typeHandlers>
+</configuration> 

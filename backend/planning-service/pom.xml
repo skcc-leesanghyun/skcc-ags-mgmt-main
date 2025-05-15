@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>com.skcc.ags</groupId>
+        <artifactId>ags-parent</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>planning-service</artifactId>
+    <name>AGS Planning and Performance Management Service</name>
+    <description>Planning and performance management service for AGS Operation Management System</description>
+
+    <properties>
+        <service.port>8082</service.port>
+        <docker.image.name>ags-planning-service</docker.image.name>
+    </properties>
+
+    <dependencies>
+        <!-- Additional service-specific dependencies can be added here -->
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project> 

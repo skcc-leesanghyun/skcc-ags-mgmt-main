@@ -1,0 +1,156 @@
+name: Build and Deploy Audit Service
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+    paths:
+      - 'backend/audit-service/**'
+
+env:
+  # REGISTRY: ghcr.io
+  REGISTRY: agsats.azurecr.io
+  IMAGE_NAME: audit-service
+  BUILD_PATH: backend/audit-service
+  DOCKERFILE_PATH: "./backend/audit-service/Dockerfile"
+  IMAGE_TAG: ${{ github.ref_name }}-${{ github.run_number }}.${{ github.run_id }}
+  IMAGE_PULL_SECRET: agsats-auth
+
+jobs:
+  build:
+    runs-on: agsats-selfhost # newkm-landscape-runner # newkm-selfhost 
+    permissions:
+      contents: read
+      packages: write
+    
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.ref_name }}
+          submodules: 'recursive'
+          persist-credentials: false
+
+      - name: Build code
+        run: |
+          set -e
+          echo "Building audit-service..."
+          cd ./backend/audit-service
+          pwd && ls -al
+          
+          echo "Running build..."
+          echo "Compiling audit-service..."
+          mvn clean package -DskipTests
+          cd ..
+          if [ $? -ne 0 ]; then
+            echo "Build failed"
+            exit 1
+          fi
+          
+
+      - name: Azure Container Registry 로그인
+        uses: azure/docker-login@v2
+        with:
+          login-server: ${{ env.REGISTRY }}
+          username: ${{ secrets.AZURE_REGISTRY_USERNAME }}
+          password: ${{ secrets.AZURE_REGISTRY_PASSWORD }}
+      
+      - name: Pull latest image for caching
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest || true
+          DOCKER_BUILDKIT=1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ env.DOCKERFILE_PATH }}
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          cache-from: |
+            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+          cache-to: type=inline
+      
+
+      - name: Upload manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: manifests
+          path: ${{ env.BUILD_PATH }}/manifests
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/develop'
+    runs-on: agsats-selfhost
+    environment: ags-mgmt-dev-env
+    steps:
+      - name: Download manifests
+        uses: actions/download-artifact@v4
+        with:
+          name: manifests
+          path: ${{ env.BUILD_PATH }}/manifests
+
+      
+      - name: Set up kubeconfig
+        uses: azure/k8s-set-context@v1
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+      - name: Deploy to Kubernetes
+        uses: Azure/k8s-deploy@v4.10
+        with:
+          namespace: ags-mgmt
+          manifests: |
+            ${{ env.BUILD_PATH }}/manifests/deploy-ags-mgmt-dev.yaml
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+  deploy-prd:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: newkm-selfhost
+    environment: newkm-prd-env
+    steps:
+      - name: Download manifests
+        uses: actions/download-artifact@v4
+        with:
+          name: manifests
+          path: manifests
+
+      
+      - name: Set up kubeconfig
+        uses: azure/k8s-set-context@v1
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+
+      - name: Deploy to Kubernetes
+        uses: Azure/k8s-deploy@v4.10
+        with:
+          namespace: newkm
+          manifests: |
+            ./manifests/deploy-newkm-landscape-prd.yaml 
+          images: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+      # - name: Deploy to Kubernetes
+      #   run: |
+      #     whoami
+      #     pwd
+      #     ls -al
+      #     # 이미지 태그를 매니페스트에 적용
+      #     sed -i "s|image:.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}|" ./manifests/deploy-newkm-landscape-dev.yaml
+          
+      #     # kubectl apply로 배포
+      #     kubectl apply -f ./manifests/deploy-newkm-landscape-dev.yaml -n newkm --validate=false
+          
+      #     # 배포 상태 확인
+      #     kubectl rollout status deployment/[deployment-name] -n newkm

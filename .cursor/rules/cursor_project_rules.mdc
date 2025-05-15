@@ -1,0 +1,118 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+## Project Overview
+
+* **Type:** Multinational Talent Sourcing System (AGS 운영관리 시스템)
+* **Description:** A system designed to source offshore, multinational talent for various projects. It supports PMs, 협력사 managers, 사업팀 담당자, 운영담당자, 정보보호팀, and 시스템관리자 in streamlining project registration, candidate selection, and performance evaluation.
+* **Primary Goal:** Streamline and optimize the talent sourcing, candidate evaluation, and performance management process by integrating multi-department roles with advanced security and workflow functionalities.
+
+## Project Structure
+
+### Framework-Specific Routing
+
+* **Directory Rules:**
+
+    * **Vue 3:** Utilize Vue Router for route management. Structure includes a dedicated `src/router/` for route definitions and a `src/views/` for component pages.
+    * Example: "Vue 3 with Composition API" → `src/router/index.js` setup with nested routes in `src/views/` folders.
+
+### Core Directories
+
+* **Versioned Structure:**
+
+    * `src/views`: Contains Vue 3 composition API components for different routes and pages.
+    * `src/components`: Reusable components that follow modern corporate UI standards.
+    * `database`: Dedicated folder for PostgreSQL schema scripts and migration files.
+    * For Backend (Spring Boot services): Each service (e.g., 인력 소싱 및 평가, On-Boarding/Off-Boarding Audit, 계획 및 성과 관리, Knowledge Management) is housed in its own directory with standard Spring Boot project structure.
+
+### Key Files
+
+* **Stack-Versioned Patterns:**
+
+    * **Vue 3:**
+        * `src/router/index.js` → Initializes Vue Router for handling application routes.
+        * `src/App.vue` → Main Vue application component.
+    * **Spring Boot Services:**
+        * `src/main/java/...` → Entry point and configuration for each Spring Boot service.
+        * `src/main/resources/mappers` → Contains MyBatis XML mapper files for SQL operations.
+
+## Tech Stack Rules
+
+* **Version Enforcement:**
+
+    * **Vue 3:** Ensure usage of the Composition API, maintain modular SFCs, and implement Vue Router for clean routing patterns.
+    * **Spring Boot:** Follow the standard layered architecture (Controller, Service, Repository). Use MyBatis (XML mappers) in place of JPA and respect Spring Boot conventions.
+    * **PostgreSQL:** Manage all schema scripts in the `database` folder and enforce version-controlled migrations.
+    * **OAuth 2 (Okta):** Secure endpoints with OAuth2 configuration, ensuring role-based access control and regular dependency updates.
+
+## PRD Compliance
+
+* **Non-Negotiable:**
+
+    * "Role-based access control is a must": Implement strict RBAC across UI and API layers.
+    * "Secure management of 서약서 (PDF or image files)": Ensure files are stored and managed securely with proper access restrictions.
+    * Additional requirements such as advanced candidate search, SOW management, and language toggle capabilities must be fully integrated.
+
+## App Flow Integration
+
+* **Stack-Aligned Flow:**
+
+    * **Vue 3 App Flow:** Map application routes using `src/router/` and deliver components from `src/views/` conforming to a modern, bright corporate UI design.
+    * **Spring Boot Backends:** Each service provides RESTful APIs. For example, the performance management service integrates with the 구매시스템 using JSON over REST, and onboarding/offboarding service ensures secure 서약서 handling.
+
+## Best Practices
+
+* **Vue 3:**
+
+    * Use the Composition API for better state and lifecycle management.
+    * Modularize components using Single File Components (SFCs).
+    * Integrate Vue Router for dynamic and nested routing structures.
+
+* **Spring Boot:**
+
+    * Adhere to a layered architecture (Controller, Service, Repository).
+    * Use MyBatis with dedicated XML mapper files to handle SQL operations efficiently.
+    * Implement centralized exception handling and logging policies.
+
+* **PostgreSQL:**
+
+    * Keep schema scripts versioned in a dedicated `database` folder.
+    * Employ migration tools to manage schema changes across environments.
+    * Optimize queries to support high volume, multi-tenant operations.
+
+* **OAuth 2 (Okta):**
+
+    * Secure endpoints using standard OAuth2 resource server configurations.
+    * Regularly update and audit dependencies to address security vulnerabilities.
+    * Use fine-grained role-based permissions to safeguard sensitive operations.
+
+## Rules
+
+* Derive folder/file patterns **directly** from technology stack and version documents.
+* For Vue 3: Adhere to a clean folder structure (i.e., `src/router/`, `src/views/`, `src/components/`).
+* For Spring Boot services: Maintain isolated service directories for each backend function.
+* Ensure that database schema scripts are maintained exclusively in the `database` folder.
+* Never mix routing patterns; for example, avoid using non-Vue Router structures in a Vue 3 project.
+
+## Rules Metrics
+
+Before starting the project development, create a metrics file in the root of the project called `cursor_metrics.md`.
+
+### Instructions:
+
+* Each time a cursor rule is used as context, update `cursor_metrics.md`.
+* Use the following format for `cursor_metrics.md:`
+
+# Rules Metrics
+
+## Usage
+
+The number of times rules is used as context
+
+* rule-name.mdc: 5
+* another-rule.mdc: 2
+* ...other rules

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.skcc.ags.planning.mapper.MonthlyPlanMapper">
+    
+    <!-- Result Maps -->
+    <resultMap id="monthlyPlanMap" type="MonthlyPlan">
+        <id property="id" column="id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="year" column="year"/>
+        <result property="month" column="month"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="status" column="status"/>
+        <collection property="gradePlans" ofType="GradePlan">
+            <id property="id" column="grade_plan_id"/>
+            <result property="monthlyPlanId" column="monthly_plan_id"/>
+            <result property="grade" column="grade"/>
+            <result property="plannedCount" column="planned_count"/>
+            <result property="actualCount" column="actual_count"/>
+        </collection>
+    </resultMap>
+
+    <!-- Select Monthly Plan List -->
+    <select id="selectMonthlyPlans" resultMap="monthlyPlanMap">
+        SELECT 
+            mp.id,
+            mp.project_id,
+            mp.project_name,
+            mp.year,
+            mp.month,
+            mp.start_date,
+            mp.end_date,
+            mp.status,
+            gp.id as grade_plan_id,
+            gp.monthly_plan_id,
+            gp.grade,
+            gp.planned_count,
+            gp.actual_count
+        FROM monthly_plans mp
+        LEFT JOIN grade_plans gp ON mp.id = gp.monthly_plan_id
+        WHERE 1=1
+        <if test="projectId != null">
+            AND mp.project_id = #{projectId}
+        </if>
+        <if test="year != null">
+            AND mp.year = #{year}
+        </if>
+        <if test="month != null">
+            AND mp.month = #{month}
+        </if>
+        ORDER BY mp.year DESC, mp.month DESC
+    </select>
+
+    <!-- Select Monthly Plan By ID -->
+    <select id="selectMonthlyPlanById" resultMap="monthlyPlanMap">
+        SELECT 
+            mp.id,
+            mp.project_id,
+            mp.project_name,
+            mp.year,
+            mp.month,
+            mp.start_date,
+            mp.end_date,
+            mp.status,
+            gp.id as grade_plan_id,
+            gp.monthly_plan_id,
+            gp.grade,
+            gp.planned_count,
+            gp.actual_count
+        FROM monthly_plans mp
+        LEFT JOIN grade_plans gp ON mp.id = gp.monthly_plan_id
+        WHERE mp.id = #{id}
+    </select>
+
+    <!-- Insert Monthly Plan -->
+    <insert id="insertMonthlyPlan" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO monthly_plans (
+            project_id,
+            project_name,
+            year,
+            month,
+            start_date,
+            end_date,
+            status
+        ) VALUES (
+            #{projectId},
+            #{projectName},
+            #{year},
+            #{month},
+            #{startDate},
+            #{endDate},
+            #{status}
+        )
+    </insert>
+
+    <!-- Update Monthly Plan -->
+    <update id="updateMonthlyPlan">
+        UPDATE monthly_plans
+        SET 
+            project_id = #{projectId},
+            project_name = #{projectName},
+            year = #{year},
+            month = #{month},
+            start_date = #{startDate},
+            end_date = #{endDate},
+            status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <!-- Delete Monthly Plan -->
+    <delete id="deleteMonthlyPlan">
+        DELETE FROM monthly_plans WHERE id = #{id}
+    </delete>
+
+    <!-- Insert Grade Plan -->
+    <insert id="insertGradePlan" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO grade_plans (
+            monthly_plan_id,
+            grade,
+            planned_count,
+            actual_count
+        ) VALUES (
+            #{monthlyPlanId},
+            #{grade},
+            #{plannedCount},
+            #{actualCount}
+        )
+    </insert>
+
+    <!-- Update Grade Plan -->
+    <update id="updateGradePlan">
+        UPDATE grade_plans
+        SET 
+            grade = #{grade},
+            planned_count = #{plannedCount},
+            actual_count = #{actualCount}
+        WHERE id = #{id}
+    </update>
+
+    <!-- Delete Grade Plans by Monthly Plan ID -->
+    <delete id="deleteGradePlansByMonthlyPlanId">
+        DELETE FROM grade_plans WHERE monthly_plan_id = #{monthlyPlanId}
+    </delete>
+
+    <!-- Select KPI Data -->
+    <select id="selectKpiData" resultType="KpiData">
+        SELECT 
+            SUM(gp.planned_count) as total_planned,
+            SUM(gp.actual_count) as total_actual,
+            CASE 
+                WHEN SUM(gp.planned_count) > 0 
+                THEN CAST(SUM(gp.actual_count) AS DECIMAL) / SUM(gp.planned_count) * 100 
+                ELSE 0 
+            END as utilization_rate,
+            CASE 
+                WHEN SUM(gp.planned_count) > 0 
+                THEN CASE 
+                    WHEN SUM(gp.actual_count) >= SUM(gp.planned_count) THEN 100
+                    ELSE CAST(SUM(gp.actual_count) AS DECIMAL) / SUM(gp.planned_count) * 100
+                END 
+                ELSE 0 
+            END as achievement_rate
+        FROM monthly_plans mp
+        JOIN grade_plans gp ON mp.id = gp.monthly_plan_id
+        WHERE 1=1
+        <if test="year != null">
+            AND mp.year = #{year}
+        </if>
+        <if test="month != null">
+            AND mp.month = #{month}
+        </if>
+        <if test="projectId != null">
+            AND mp.project_id = #{projectId}
+        </if>
+    </select>
+</mapper> 

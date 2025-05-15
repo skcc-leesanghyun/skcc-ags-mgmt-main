@@ -1,0 +1,96 @@
+---
+description: Apply these rules when making changes to the project
+globs:
+alwaysApply: true
+---
+
+Update this rule if user requested changes to the project requirement, etc.
+# Frontend Guideline Document for AGS 운영관리 시스템
+
+This document outlines the frontend architecture, design principles, and technologies used for the AGS 운영관리 시스템. It is aimed at providing a clear and comprehensive understanding of the frontend setup, even for readers without a technical background.
+
+## Frontend Architecture
+
+Our frontend is built with Vue 3, a modern and progressive JavaScript framework that is well-suited for building dynamic, single-page applications (SPAs). The architecture follows a component-based structure where each UI piece is encapsulated as a reusable unit. This approach supports scalability by allowing new features to be developed as independent components and enhances maintainability by isolating functionality.
+
+Key points:
+
+- **Framework & Library:** Vue 3 forms the backbone of our application, making use of its single file components (SFCs) which bundle HTML, JavaScript, and CSS together.
+- **Scalability & Maintainability:** The clear separation of concerns in components allows the system to grow without losing clarity. Future modules can be added with minimal impact on existing code.
+- **Performance:** By leveraging lazy loading and code splitting, the initial load time is minimized and performance is optimized across all devices.
+
+## Design Principles
+
+Our design is guided by the principles of usability, accessibility, and responsiveness. The aim is to ensure that every user, from a project manager to a system administrator, can interact with the application seamlessly.
+
+- **Usability:** We design with a focus on ease of use. Key tasks like project registration or candidate search are simplified through intuitive interfaces.
+- **Accessibility:** The system adheres to accessibility guidelines, ensuring that users with disabilities can also navigate and interact with the UI easily.
+- **Responsiveness:** The layout adapts gracefully to various screen sizes and devices, ensuring that the experience is consistent whether on desktop or mobile.
+- **Internationalization:** A language toggle (English/Korean) is included so that users can switch based on their language preference, with resource files having customizable terminology.
+
+## Styling and Theming
+
+For styling, we aim to create a modern, bright corporate look that is both clean and professional.
+
+- **Styling Approach:** We use SASS (a powerful CSS preprocessor) along with the BEM (Block, Element, Modifier) methodology. This structured approach to styling makes it easier to maintain and update styles.
+- **Theming:** Theming is handled by defining a set of variables (colors, fonts, spacing, etc.) in our SASS files. This ensures a consistent look and feel across the entire app and allows for quick adjustments when corporate branding needs change.
+- **Design Style:** Our design follows a flat, modern style;
+  - Clean lines, minimalistic interface elements, and ample white space make the interface easy on the eyes.
+  - We also incorporate subtle glassmorphism effects in certain areas to provide a modern flair where needed without compromising clarity or performance.
+- **Color Palette:**
+  - Primary: #0052CC (corporate blue)
+  - Secondary: #172B4D (dark slate for texts and accents)
+  - Accent: #FFAB00 (bright accent for call-to-action buttons)
+  - Background: #F4F5F7 (light, neutral background)
+  - Highlight: #FFFFFF (clean white for cards and modals)
+- **Font:** We recommend using corporate-friendly fonts such as 'Helvetica Neue', 'Arial', or system fonts that align with a modern, professional aesthetic. These fonts ensure readability and a clean look across the application.
+
+## Component Structure
+
+The project leverages a component-based architecture, which is a hallmark of Vue 3. Each component encapsulates its own HTML, CSS, and JavaScript logic, making the frontend highly modular.
+
+- **Organization:** Components are organized in a directory structure that groups view components, shared components, and utility components separately.
+- **Reusability:** Common UI elements such as buttons, form fields, and modal dialogs are built as reusable components. This reduces redundancy and streamlines both development and updates.
+- **Maintenance:** With well-defined interfaces between components, updates or changes in one part of the system are less likely to impact other parts, ensuring ease of maintenance.
+
+## State Management
+
+Managing state efficiently is crucial in an application that features aspects such as user authentication, role-based access, and dynamic data loading.
+
+- **Approach:** We use a centralized state management solution to handle the application state. Given the Vue 3 environment, Pinia (or Vuex if required by legacy components) serves to manage shared state across the application.
+- **Usage:** This state management tool is used to store user information after authentication (integrated via OAuth2 with Okta), track UI states like the language toggle, and handle dynamic data fetched through REST API integrations.
+- **Benefit:** This ensures that all components have timely and consistent access to critical data, enhancing the user experience by providing a “single source of truth” for application state.
+
+## Routing and Navigation
+
+Smooth navigation is a key part of our user experience. The application employs a robust routing system to handle multiple views and nested routes.
+
+- **Routing Library:** Vue Router is used to manage the client-side routing. It seamlessly handles transitions between different application views including dashboard, project registration, candidate search, and more.
+- **Navigation Structure:** The navigation is designed to be intuitive with a top-level menu and contextual sidebars. Users can easily locate modules such as project management, SOW documentation, and performance dashboards.
+- **Dynamic Routing:** Certain routes are dynamic to accommodate user-specific or role-based views, ensuring that users access features relevant to their roles and permissions.
+
+## Performance Optimization
+
+To ensure the application runs swiftly, several performance optimizations are implemented:
+
+- **Lazy Loading:** Components and routes are lazy-loaded, meaning they are only loaded when needed, reducing the initial bundle size.
+- **Code Splitting:** The application’s code is split into manageable chunks, which allows for faster load times and efficient caching.
+- **Asset Optimization:** Images and other static assets are optimized and served in modern formats. Tools in the build process, such as minification and bundling, further help in reducing load times.
+- **Efficient API Calls:** Integration with the backend REST API is optimized to fetch only what is necessary, reducing latency in data-intensive modules like candidate search and performance dashboards.
+
+## Testing and Quality Assurance
+
+Maintaining the quality of our frontend code is a top priority to ensure a smooth user experience.
+
+- **Unit Testing:** We employ unit tests for individual components using testing frameworks such as Jest. This ensures each piece functions as expected when isolated.
+- **Integration Testing:** Integration testing (with tools like Vue Test Utils) validates how components interact, ensuring that data flows correctly between them.
+- **End-to-End Testing:** Cypress is used to simulate user interactions in a real browser environment, validating critical user paths and preserving the overall functionality of the application.
+- **Continuous Integration:** GitHub Actions is integrated into our CI/CD pipeline to automatically run tests on each commit and pull request, ensuring that code quality remains high throughout development.
+
+## Conclusion and Overall Frontend Summary
+
+The frontend of AGS 운영관리 시스템 is designed with scalability, maintainability, and performance at its core. By using Vue 3, a component-based architecture, centralized state management, and dynamic routing, we ensure a robust and user-friendly interface that meets the diverse needs of our enterprise users.
+
+Our commitment to usability, responsiveness, and accessibility is evident in the modern, bright corporate design that is supported by a clear, consistent styling approach using SASS, BEM, and a tailored color palette. Moreover, the application’s performance is optimized through lazy loading, code splitting, and efficient asset management, backed by a rigorous testing framework to uphold quality.
+
+Together, these guidelines form the backbone of a frontend setup that is not only efficient and scalable but also user-centric, ensuring that the AGS 운영관리 시스템 remains a reliable tool in managing multinational talent sourcing and related enterprise processes.

@@ -1,0 +1,32 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: audit-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ags_audit
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  cloud:
+    discovery:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+mybatis:
+  mapper-locations: classpath:mappers/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.ags.audit: DEBUG
+    org.springframework: INFO 
