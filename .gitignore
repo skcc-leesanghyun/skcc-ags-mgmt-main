@@ -86,4 +86,6 @@ build/
 # Keep only specific SQL files
 database/*
 !database/01_create_roles_and_users.sql
-!database/create_role_and_users.prompt 
+!database/create_role_and_users.prompt
+!database/README.md
+!database/schema/01_common_schema.sql 
